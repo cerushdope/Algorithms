@@ -3,6 +3,8 @@
 #include <vector>
 #include <set>
 #include <utility>
+
+#define INF 399999999
 using namespace std;
 
 int number_of_nodes;
@@ -11,8 +13,17 @@ map <int, int> node_values;
 map <int, vector <int> > node_neighbours;
 map < pair <int,int>, int> edge_lengths;
 set <int> visited_nodes;
-set <int> unvisited_nodes;
 map <int, int> predecessor_nodes;
+
+struct my_compare{
+  bool operator()(const int& first, const int& second) const{
+    if(node_values[first] < node_values[second])
+      return true;
+    return false;
+  }
+};
+multiset <int, my_compare> unvisited_nodes;
+
 
 //Guaranteed that predecessor node map is filled, prints the path from first node to last node.
 void smallest_path(int start_index, int end_index){
@@ -33,21 +44,10 @@ void smallest_path(int start_index, int end_index){
     }
 }
 
-//Finds the node with the lowest value by iterating over unvisited nodes
-//and seeing every node's value.
+//Finds the node with the lowest value by iterating 
+//over unvisited nodes and seeing every node's value.                   !!!CHANGED THIS!!!
 int find_node_with_lowest_value(){
-    //Initialize variable for minimum number.
-    int current_min = 399999999;
-    //Initialize variable storing the node with lowest number.
-    int node_with_lowest_value = -1;
-    //Iterate over all unvisited nodes and choose the one with lowest value.
-    for(unvisited_node : unvisited_nodes){
-        if(node_values[unvisited_node] < current_min){
-            current_min = node_values[unvisited_node];
-            node_with_lowest_value = unvisited_node;
-        }
-    }
-    return node_with_lowest_value;
+  return *(unvisited_nodes.begin());
 }
 
 //Relaxes two nodes, if current node length + length from current node to neighbour is lower
@@ -78,33 +78,33 @@ int dijkstra(int first_index, int last_index){
     //Insert every node to unvisited nodes set.
     for(int i = 0; i < number_of_nodes; i++){
         if(i != first_index){
-            node_values[i] = (399999999);
+            node_values[i] = INF;
         }
         unvisited_nodes.insert(i);
     }
 
     //Make loop until we find the shortest path
     while(true){
-        //Get the current node.
-        int current_node = find_node_with_lowest_value();
-        //Get the neighbours of the current node.
-        vector <int>& current_node_neighbours = node_neighbours[current_node];
-
-        //Relax each unvisited neighbour.
-        for(current_node_neighbour : current_node_neighbours){
-            if(visited_nodes.find(current_node_neighbour) == visited_nodes.end())
-                relax_neighbour(current_node, current_node_neighbour);
-        }
-        //After considering all of the current node's neighbours,
-        //insert it into visited set and remove from unvisited set.
-        unvisited_nodes.erase(current_node);
-        visited_nodes.insert(current_node);
-
-        //Check if we found destination
-        if(visited_nodes.find(last_index) != visited_nodes.end()){
-            //If we did, return the smalles length
-            return node_values[last_index];
-        }
+      //Get the current node.
+      int current_node = find_node_with_lowest_value();
+      //Get the neighbours of the current node.
+      vector <int>& current_node_neighbours = node_neighbours[current_node];
+      
+      //Relax each unvisited neighbour.
+      for(auto current_node_neighbour : current_node_neighbours){
+	if(visited_nodes.find(current_node_neighbour) == visited_nodes.end())
+	  relax_neighbour(current_node, current_node_neighbour);
+      }
+      //After considering all of the current node's neighbours,
+      //insert it into visited set and remove from unvisited set.          !!!CHANGED THIS!!!
+      unvisited_nodes.erase(unvisited_nodes.begin());
+      visited_nodes.insert(current_node);
+								 
+      //Check if we found destination
+      if(visited_nodes.find(last_index) != visited_nodes.end()){
+	//If we did, return the smalles length
+	return node_values[last_index];
+      }
     }
 }
 
