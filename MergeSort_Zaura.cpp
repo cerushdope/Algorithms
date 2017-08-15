@@ -56,7 +56,7 @@ vector<long>* mergeSort(vector<long>* vec){
 
 //reads raw numbers from inputFile and creates vector with those
 void readInput(vector<long>* vec){
-  ifstream inputStream; inputStream.open("mergeSort_input.txt");
+  ifstream inputStream; inputStream.open("inputFiles/MergeSort_input.txt");
   inputStream >> numElems;
 
   long x;
@@ -68,7 +68,7 @@ void readInput(vector<long>* vec){
 
 //writes random numbers inside input file to be sorted
 void randomInput(){
-  ofstream outStream; outStream.open("MergeSort_input.txt");
+  ofstream outStream; outStream.open("inputFiles/MergeSort_input.txt");
   srand(time(NULL));
   int numElems = 1000000;
   outStream << numElems << "\n";
@@ -85,4 +85,7 @@ main(){
   randomInput();
   readInput(vec);
   mergeSort(vec);
+
+  //printVector(vec);
+  cout<<"done working"<<endl;
 }

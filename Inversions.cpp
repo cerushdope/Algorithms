@@ -68,7 +68,7 @@ long sort_and_count(vector<long>* vec){
 
 //this method build a vector from a raw numbers inside the "input.txt"
 void readInput(vector<long>* vec){
-  ifstream inputStream; inputStream.open("Inversions_input.txt");
+  ifstream inputStream; inputStream.open("inputFiles/Inversions_input.txt");
   inputStream >> numElems;
   long x;
   for(int i=0; i<numElems; i++){
